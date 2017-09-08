@@ -19,7 +19,7 @@ public class Connection{
 
     public static String getServerMessage(String place) {
         try {
-            URL url = new URL(SERVER_LOCATION + place);
+            URL url = new URL("http://localhost:9000/");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept", "application/json");

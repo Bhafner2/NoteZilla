@@ -9,6 +9,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import java.io.BufferedInputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 
 public class TodoOverview extends AppCompatActivity {
@@ -64,10 +68,33 @@ public class TodoOverview extends AppCompatActivity {
     private ArrayList<String> getTitlesFromServer(){
         ArrayList<String> message = new ArrayList<>();
 
-        message.add(Connection.getServerMessage("/notes/all"));
+        message.add(getServerMessage("/notes/all"));
 
         return message;
     }
+
+    public  String getServerMessage(String place) {
+            try {
+                URL url = new URL("http://www.android.com/");
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                try {
+                    InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                    return readStream(in);
+                } finally {
+                    urlConnection.disconnect();
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        return "No connection";
+    }
+
+    private String readStream(InputStream in) {
+       // JsonReader json = new JsonReader();
+        java.util.Scanner s = new java.util.Scanner(in).useDelimiter("\\A");
+        return s.hasNext() ? s.next() : "";
+    }
+
 
     private void makeCreateButton() {
         final Button login = (Button) findViewById(R.id.create);
