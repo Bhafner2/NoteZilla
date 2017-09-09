@@ -17,6 +17,8 @@ public class TodoDetail extends AppCompatActivity {
 
         makeLogoutButton();
         makeSaveButton();
+        makeDeleteButton();
+
         titel = (EditText) findViewById(R.id.titel);
         contend = (EditText) findViewById(R.id.contend);
 
@@ -48,6 +50,17 @@ public class TodoDetail extends AppCompatActivity {
         });
     }
 
+    private void makeDeleteButton() {
+        final Button login = (Button) findViewById(R.id.delete);
+        login.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent overview = new Intent(TodoDetail.this, TodoOverview.class);
+                TodoDetail.this.startActivity(overview);
+                deleteNoteInServer();
+            }
+        });
+    }
+
     private void makeSaveButton() {
         final Button login = (Button) findViewById(R.id.save);
         login.setOnClickListener(new View.OnClickListener() {
@@ -60,6 +73,10 @@ public class TodoDetail extends AppCompatActivity {
     }
 
     private void saveNoteInServer() {
+        //TODO
+    }
+
+    private void deleteNoteInServer() {
         //TODO
     }
 }

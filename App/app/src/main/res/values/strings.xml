@@ -16,4 +16,5 @@
     <string name="save">save</string>
     <string name="logout">logout</string>
     <string name="create">create</string>
+    <string name="delete">delete</string>
 </resources>

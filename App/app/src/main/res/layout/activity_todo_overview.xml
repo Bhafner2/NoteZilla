@@ -9,11 +9,11 @@
     <ListView
         android:id="@+id/list_view"
         android:layout_width="match_parent"
-        android:layout_height="450dp"
+        android:layout_height="match_parent"
         />
 
     <Button
-        android:layout_width="150dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:id="@+id/create"
         android:text="@string/create"
@@ -22,7 +22,7 @@
         android:background="@color/colorPrimary"/>
 
     <Button
-        android:layout_width="150dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:id="@+id/logout"
         android:text="@string/logout"
