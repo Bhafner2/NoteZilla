@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".LoginActivity"
+            android:name=".activitys.LoginActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,8 +24,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".TodoDetail" />
-        <activity android:name=".TodoOverview"></activity>
+        <activity android:name=".activitys.NoteDetail" />
+        <activity android:name=".activitys.NoteOverview"></activity>
     </application>
 
 </manifest>
