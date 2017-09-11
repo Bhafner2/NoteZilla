@@ -90,7 +90,6 @@ public class NoteDetail extends AppCompatActivity {
             Log.d("Note", "Created: " + note.getTitel());
             createNote();
         }
-        toast(note.getTitel() + " successfully saved");
     }
 
     private void createNote(){
@@ -168,6 +167,7 @@ public class NoteDetail extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             Log.d("Note", "Created: " + titel.getText().toString());
+            toast(note.getTitel() + " successfully saved");
             finish();
         }
     }

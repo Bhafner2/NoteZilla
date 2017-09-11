@@ -59,7 +59,7 @@ public class UserController {
     public @ResponseBody
     Users validUser(String email, String password) {
     for(Users user : userRepo.findAll()){
-        if(user.getPassword() == password){
+        if(user.getEmail().equals(email) && user.getPassword().equals(password)){
             return user;
         }
     }
