@@ -6,29 +6,39 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 /**
  * Created by b7hafnb on 07.09.2017.
  */
 
 public class Connection{
-    public static final String SERVER_LOCATION = "http://192.168.125.114:9000";
+    public static final String SERVER_LOCATION = "https://192.168.1.105:8443";
     public static final String DELETE_NOTE = "/notes/delete/";
     public static final String GET_NOTE = "/notes/all/";
     public static final String CREATE_NOTE = "/notes/new/";
     public static final String VERIFY_USER = "/Users/valid/";
 
+    private static final String STORE = "Notezilla.p12";
+    private static final String PASSWORD = "Ad.1234";
 
 
     public static String getServerRequest(String place) {
-        HttpURLConnection connection = null;
+        HttpsURLConnection connection = null;
         BufferedReader reader = null;
         try {
             URL url = new URL(SERVER_LOCATION + place);
-            connection = (HttpURLConnection) url.openConnection();
+            connection = (HttpsURLConnection) url.openConnection();
             connection.connect();
 
             if(connection.getResponseCode() == 200){
@@ -67,11 +77,27 @@ public class Connection{
     }
 
     public static String putServerRequest(String place, String email, String password) {
-        HttpURLConnection connection = null;
+        HttpsURLConnection connection = null;
         BufferedReader reader = null;
         try {
+            try
+            {
+                // Create an SSLContext that uses our TrustManager
+                SSLContext context = SSLContext.getInstance("TLS");
+                TrustManager[] tmlist = {new MyTrustManager()};
+                context.init(null, tmlist, null);
+                connection.setSSLSocketFactory(context.getSocketFactory());
+            }
+            catch (NoSuchAlgorithmException e)
+            {
+                throw new IOException(e);
+            } catch (KeyManagementException e)
+            {
+                throw new IOException(e);
+            }
+
             URL url = new URL(SERVER_LOCATION + place + "?email="+email+"&password="+password);
-            connection = (HttpURLConnection) url.openConnection();
+            connection = (HttpsURLConnection) url.openConnection();
             connection.setRequestMethod("PUT");
 
             connection.connect();
@@ -99,7 +125,9 @@ public class Connection{
         } catch (IOException e){
             e.printStackTrace();
         } finally {
-            connection.disconnect();
+            if(connection != null) {
+                connection.disconnect();
+            }
             try {
                 if(reader != null) {
                     reader.close();
@@ -112,10 +140,10 @@ public class Connection{
     }
 
     public static void deleteNoteServerRequest(String id) {
-        HttpURLConnection connection = null;
+        HttpsURLConnection connection = null;
         try {
             URL url = new URL(SERVER_LOCATION + DELETE_NOTE + id);
-            connection = (HttpURLConnection) url.openConnection();
+            connection = (HttpsURLConnection) url.openConnection();
             connection.setRequestMethod("DELETE");
             connection.connect();
 
@@ -131,10 +159,10 @@ public class Connection{
     }
 
     public static void createNoteServerRequest(String titel, String contend) {
-        HttpURLConnection connection = null;
+        HttpsURLConnection connection = null;
         try {
             URL url = new URL(SERVER_LOCATION + CREATE_NOTE + "?title=" + titel + "&content=" + contend);
-            connection = (HttpURLConnection) url.openConnection();
+            connection = (HttpsURLConnection) url.openConnection();
             connection.setRequestMethod("PUT");
             connection.connect();
 
@@ -147,5 +175,28 @@ public class Connection{
         } finally {
             connection.disconnect();
         }
+    }
+
+    private static class MyTrustManager implements X509TrustManager
+    {
+
+        @Override
+        public void checkClientTrusted(X509Certificate[] chain, String authType)
+                throws CertificateException
+        {
+        }
+
+        @Override
+        public void checkServerTrusted(X509Certificate[] chain, String authType)
+                throws CertificateException
+        {
+        }
+
+        @Override
+        public X509Certificate[] getAcceptedIssuers()
+        {
+            return null;
+        }
+
     }
 }
