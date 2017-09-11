@@ -18,6 +18,7 @@ import ch.teko.benj.notezillaapp.R;
 import ch.teko.benj.notezillaapp.objects.Note;
 
 import static ch.teko.benj.notezillaapp.server.Connection.GET_NOTE;
+import static ch.teko.benj.notezillaapp.server.Connection.createNoteServerRequest;
 import static ch.teko.benj.notezillaapp.server.Connection.deleteNoteServerRequest;
 import static ch.teko.benj.notezillaapp.server.Connection.getServerRequest;
 
@@ -93,8 +94,7 @@ public class NoteDetail extends AppCompatActivity {
     }
 
     private void createNote(){
-        //TODO create
-        finish();
+        new PutTask().execute(note.getTitel(), note.getContend());
     }
 
     private void editNote(){
@@ -120,10 +120,10 @@ public class NoteDetail extends AppCompatActivity {
     }
 
     private void getNote(String id) {
-        new JSONTask().execute(GET_NOTE + id);
+        new GetTask().execute(GET_NOTE + id);
     }
 
-    public class JSONTask extends AsyncTask<String, String, String> {
+    public class GetTask extends AsyncTask<String, String, String> {
         @Override
         protected String doInBackground(String... params) {
             String jsonFile = getServerRequest(params[0]);
@@ -155,6 +155,19 @@ public class NoteDetail extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             Log.d("Note", "Deleted: " + titel.getText().toString());
+            finish();
+        }
+    }
+
+    public class PutTask extends AsyncTask<String, String, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            createNoteServerRequest(params[0],params[1]);
+            return null;
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("Note", "Created: " + titel.getText().toString());
             finish();
         }
     }

@@ -54,4 +54,15 @@ public class UserController {
         user.setName(name);
         return userRepo.save(user);
     }
+
+    @PutMapping(value = "/valid/")
+    public @ResponseBody
+    Users validUser(String email, String password) {
+    for(Users user : userRepo.findAll()){
+        if(user.getPassword() == password){
+            return user;
+        }
+    }
+    return null;
+    }
 }

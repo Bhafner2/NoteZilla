@@ -15,10 +15,11 @@ import java.net.URL;
  */
 
 public class Connection{
-    public static final String SERVER_LOCATION = "http://192.168.1.105:9000";
+    public static final String SERVER_LOCATION = "http://192.168.125.114:9000";
     public static final String DELETE_NOTE = "/notes/delete/";
     public static final String GET_NOTE = "/notes/all/";
-    public static final String SAVE_NOTE = "/notes/all/";
+    public static final String CREATE_NOTE = "/notes/new/";
+    public static final String GET_USERS = "/Users/all/";
 
 
 
@@ -72,6 +73,27 @@ public class Connection{
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("DELETE");
             connection.connect();
+
+            Log.d("Server answer", String.valueOf(connection.getResponseCode()));
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e){
+            e.printStackTrace();
+        } finally {
+            connection.disconnect();
+        }
+    }
+
+    public static void createNoteServerRequest(String titel, String contend) {
+        HttpURLConnection connection = null;
+        try {
+            URL url = new URL(SERVER_LOCATION + CREATE_NOTE + "?title=" + titel + "&content=" + contend);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("PUT");
+            connection.connect();
+
+            Log.d("Server answer", String.valueOf(connection.getResponseCode()));
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
