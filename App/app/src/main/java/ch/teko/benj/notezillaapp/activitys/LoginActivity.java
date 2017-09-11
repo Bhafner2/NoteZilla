@@ -18,6 +18,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,18 +29,27 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import ch.teko.benj.notezillaapp.R;
+import ch.teko.benj.notezillaapp.objects.Users;
 
 import static android.Manifest.permission.READ_CONTACTS;
+import static ch.teko.benj.notezillaapp.server.Connection.VERIFY_USER;
+import static ch.teko.benj.notezillaapp.server.Connection.putServerRequest;
 
 /**
  * A login screen that offers login via email/password.
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
+    private static final String NOT_VALID = "NOT_VALID";
+    private static final String VALID = "VALID";
+    private Users user;
     private static final int REQUEST_READ_CONTACTS = 0;
 
     private static final String[] DUMMY_CREDENTIALS = new String[]{
@@ -189,7 +199,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private boolean isPasswordValid(String password) {
-        return password.length() > 4;
+        return password.length() > 3;
     }
 
     /**
@@ -298,8 +308,20 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-            return false;
+            String jsonFile = putServerRequest(VERIFY_USER, mEmail.toString(), mPassword.toString());
+            Log.d("Server answer", jsonFile);
+            if(jsonFile.equals("")){
+                return false;
+            }else {
+                try {
+                    JSONObject object = new JSONObject(jsonFile);
+                    user = new Users(object.getInt("idUsers"), object.getString("email"), object.getString("password"), object.getString("name"));
+                    Log.d("User verfied ", user.getName());
+                } catch (JSONException e1) {
+                    e1.printStackTrace();
+                }
+                return true;
+            }
         }
 
         @Override

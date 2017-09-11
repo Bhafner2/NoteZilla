@@ -62,7 +62,7 @@ public class NoteOverview extends AppCompatActivity {
     }
 
     private void updateList() {
-        new JSONTask().execute(GET_NOTE);
+        new GetTask().execute(GET_NOTE);
     }
 
     private void setDataToList(ArrayList<Note> titels){
@@ -102,7 +102,7 @@ public class NoteOverview extends AppCompatActivity {
         });
     }
 
-    public class JSONTask extends AsyncTask<String, String, String>{
+    public class GetTask extends AsyncTask<String, String, String>{
         @Override
         protected String doInBackground(String... params) {
             String jsonFile = getServerRequest(params[0]);
