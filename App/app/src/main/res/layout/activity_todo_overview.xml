@@ -20,7 +20,7 @@
         android:layout_below="@+id/create" />
 
     <ImageButton
-        android:layout_width="40dp"
+        android:layout_width="60dp"
         android:layout_height="40dp"
         android:id="@+id/logout"
         android:contentDescription="@string/logout"
