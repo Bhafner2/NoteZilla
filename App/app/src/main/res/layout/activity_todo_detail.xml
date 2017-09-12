@@ -1,56 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="ch.teko.benj.notezillaapp.activitys.NoteDetail">
 
+    <ImageButton
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:id="@+id/save"
+        android:contentDescription="@string/save"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:src="@drawable/save"
+        />
+
+    <ImageButton
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:id="@+id/delete"
+        android:contentDescription="@string/delete"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/delete"
+        />
+
+    <ImageButton
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:id="@+id/logout"
+        android:contentDescription="@string/logout"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/logout"
+        />
+
     <EditText
-        android:id="@+id/titel"
+        android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:layout_alignParentStart="true"
-        android:textSize="24dp"
+        android:imeOptions="actionNext"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:textSize="24sp"
+        android:maxLength="20"
+        android:layout_below="@+id/save"
         />
-
+        <!-- singleLine is needed for Lollipop, maxLines is for the new OS -->
 
     <EditText
         android:id="@+id/contend"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/titel"
-        android:layout_above="@+id/save"
         android:gravity="top"
+        android:inputType="textMultiLine"
+        android:layout_below="@+id/title"
         />
-
-    <Button
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/save"
-        android:text="@string/save"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:background="@color/colorPrimary"/>
-
-    <Button
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/delete"
-        android:text="@string/delete"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:background="@color/colorAccent"/>
-
-    <Button
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/logout"
-        android:text="@string/logout"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"/>
-
-
-
 
 </RelativeLayout>

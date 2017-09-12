@@ -7,8 +7,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -20,10 +20,11 @@ import ch.teko.benj.notezillaapp.objects.Note;
 import static ch.teko.benj.notezillaapp.server.Connection.GET_NOTE;
 import static ch.teko.benj.notezillaapp.server.Connection.createNoteServerRequest;
 import static ch.teko.benj.notezillaapp.server.Connection.deleteNoteServerRequest;
+import static ch.teko.benj.notezillaapp.server.Connection.editNoteServerRequest;
 import static ch.teko.benj.notezillaapp.server.Connection.getServerRequest;
 
 public class NoteDetail extends AppCompatActivity {
-    private EditText titel;
+    private EditText title;
     private EditText contend;
     private Note note;
     @Override
@@ -35,7 +36,7 @@ public class NoteDetail extends AppCompatActivity {
         makeSaveButton();
         makeDeleteButton();
 
-        titel = (EditText) findViewById(R.id.titel);
+        title = (EditText) findViewById(R.id.title);
         contend = (EditText) findViewById(R.id.contend);
 
         reviceData();
@@ -51,7 +52,7 @@ public class NoteDetail extends AppCompatActivity {
     }
 
     private void makeLogoutButton() {
-        final Button login = (Button) findViewById(R.id.logout);
+        final ImageButton login = (ImageButton) findViewById(R.id.logout);
         login.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent logout = new Intent(NoteDetail.this, LoginActivity.class);
@@ -61,17 +62,17 @@ public class NoteDetail extends AppCompatActivity {
     }
 
     private void makeDeleteButton() {
-        final Button delete = (Button) findViewById(R.id.delete);
+        final ImageButton delete = (ImageButton) findViewById(R.id.delete);
         delete.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 deleteNoteInServer();
-                toast(titel.getText().toString() + " successfully deleted");
+                toast(title.getText().toString() + " successfully deleted");
             }
         });
     }
 
     private void makeSaveButton() {
-        final Button login = (Button) findViewById(R.id.save);
+        final ImageButton login = (ImageButton) findViewById(R.id.save);
         login.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 saveNoteInServer();
@@ -80,15 +81,19 @@ public class NoteDetail extends AppCompatActivity {
     }
 
     private void saveNoteInServer() {
-        if(note != null){
-            note.setTitel(titel.getText().toString());
-            note.setContend(contend.getText().toString());
-            Log.d("Note", "Changed: " + note.getTitel());
-            editNote();
+        if(title.getText().toString().length() > 0) {
+            if (note != null) {
+                note.setTitel(title.getText().toString());
+                note.setContend(contend.getText().toString());
+                Log.d("Note", "Changed: " + note.getTitel());
+                editNote();
+            } else {
+                note = new Note(title.getText().toString(), contend.getText().toString());
+                Log.d("Note", "Created: " + note.getTitel());
+                createNote();
+            }
         }else{
-            note = new Note(titel.getText().toString(), contend.getText().toString());
-            Log.d("Note", "Created: " + note.getTitel());
-            createNote();
+            toast("A title is needed");
         }
     }
 
@@ -97,8 +102,7 @@ public class NoteDetail extends AppCompatActivity {
     }
 
     private void editNote(){
-        deleteNoteInServer();
-        createNote();
+        new UpdateTask().execute(String.valueOf(note.getId()), note.getTitel(), note.getContend());
     }
 
     private void deleteNoteInServer() {
@@ -111,10 +115,9 @@ public class NoteDetail extends AppCompatActivity {
 
     private void toast(String message){
         Context context = getApplicationContext();
-        CharSequence text = message;
         int duration = Toast.LENGTH_SHORT;
 
-        Toast toast = Toast.makeText(context, text, duration);
+        Toast toast = Toast.makeText(context, message, duration);
         toast.show();
     }
 
@@ -122,7 +125,7 @@ public class NoteDetail extends AppCompatActivity {
         new GetTask().execute(GET_NOTE + id);
     }
 
-    public class GetTask extends AsyncTask<String, String, String> {
+    private class GetTask extends AsyncTask<String, String, String> {
         @Override
         protected String doInBackground(String... params) {
             String jsonFile = getServerRequest(params[0]);
@@ -140,12 +143,12 @@ public class NoteDetail extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            titel.setText(note.getTitel());
+            title.setText(note.getTitel());
             contend.setText(note.getContend());
         }
     }
 
-    public class DeleteTask extends AsyncTask<String, String, String> {
+    private class DeleteTask extends AsyncTask<String, String, String> {
         @Override
         protected String doInBackground(String... params) {
             deleteNoteServerRequest(params[0]);
@@ -153,22 +156,41 @@ public class NoteDetail extends AppCompatActivity {
         }
         @Override
         protected void onPostExecute(String result) {
-            Log.d("Note", "Deleted: " + titel.getText().toString());
+            Log.d("Note", "Deleted: " + title.getText().toString());
             finish();
         }
     }
 
-    public class PutTask extends AsyncTask<String, String, String> {
+    private class PutTask extends AsyncTask<String, String, String> {
         @Override
         protected String doInBackground(String... params) {
-            createNoteServerRequest(params[0],params[1]);
+            createNoteServerRequest(params[0],replaceReturn(params[1]));
             return null;
         }
         @Override
         protected void onPostExecute(String result) {
-            Log.d("Note", "Created: " + titel.getText().toString());
+            Log.d("Note", "Created: " + title.getText().toString());
             toast(note.getTitel() + " successfully saved");
             finish();
         }
+    }
+
+    private class UpdateTask extends AsyncTask<String, String, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            editNoteServerRequest(params[0],params[1], replaceReturn(params[2]));
+            return null;
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("Note", "Updated: " + title.getText().toString());
+            toast(note.getTitel() + " successfully updated");
+            finish();
+        }
+    }
+
+    private String replaceReturn(String text){
+        return text.replace("\n", "%0A");
+        //Backend only handle %0A as Return
     }
 }

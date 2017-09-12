@@ -11,6 +11,11 @@
     tools:context="ch.teko.benj.notezillaapp.activitys.LoginActivity">
 
     <!-- Login progress -->
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:src="@mipmap/logo"
+        android:contentDescription="@string/logo" />
     <ProgressBar
         android:id="@+id/login_progress"
         style="?android:attr/progressBarStyleLarge"

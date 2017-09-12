@@ -6,29 +6,27 @@
     android:layout_height="match_parent"
     tools:context="ch.teko.benj.notezillaapp.activitys.NoteOverview">
 
+    <ImageButton
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:id="@+id/create"
+        android:contentDescription="@string/create"
+        android:src="@drawable/create"/>
+
     <ListView
         android:id="@+id/list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/create" />
+        android:layout_below="@+id/create" />
 
-    <Button
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/create"
-        android:text="@string/create"
+    <ImageButton
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:id="@+id/logout"
+        android:contentDescription="@string/logout"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:background="@color/colorPrimary"/>
-
-    <Button
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/logout"
-        android:text="@string/logout"
-        android:layout_alignParentBottom="true"
-        android:layout_alignLeft="@id/create"
-        android:layout_alignParentLeft="true"/>
-
+        android:src="@drawable/logout"
+        />
 
 </RelativeLayout>

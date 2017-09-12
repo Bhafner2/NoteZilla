@@ -9,7 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -74,16 +74,15 @@ public class NoteOverview extends AppCompatActivity {
 
     private void toast(String message){
         Context context = getApplicationContext();
-        CharSequence text = message;
         int duration = Toast.LENGTH_SHORT;
 
-        Toast toast = Toast.makeText(context, text, duration);
+        Toast toast = Toast.makeText(context, message, duration);
         toast.show();
     }
 
 
     private void makeCreateButton() {
-        final Button login = (Button) findViewById(R.id.create);
+        final ImageButton login = (ImageButton) findViewById(R.id.create);
         login.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent detail = new Intent(NoteOverview.this, NoteDetail.class);
@@ -93,7 +92,7 @@ public class NoteOverview extends AppCompatActivity {
     }
 
     private void makeLogoutButton() {
-        final Button login = (Button) findViewById(R.id.logout);
+        final ImageButton login = (ImageButton) findViewById(R.id.logout);
         login.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent logout = new Intent(NoteOverview.this, LoginActivity.class);
@@ -102,7 +101,7 @@ public class NoteOverview extends AppCompatActivity {
         });
     }
 
-    public class GetTask extends AsyncTask<String, String, String>{
+    private class GetTask extends AsyncTask<String, String, String>{
         @Override
         protected String doInBackground(String... params) {
             String jsonFile = getServerRequest(params[0]);
