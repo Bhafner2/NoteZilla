@@ -33,7 +33,7 @@ public class NoteController {
         return null;
     }
 
-    @PatchMapping(value = "/edit/{id}")
+    @PutMapping(value = "/edit/{id}")
     public @ResponseBody
     Notes updateContent(@PathVariable("id") int id, String title, String content) {
         Notes noteModel = noteRepo.findOne(id);
