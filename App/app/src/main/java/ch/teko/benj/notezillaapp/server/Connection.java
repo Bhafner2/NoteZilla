@@ -8,14 +8,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
 /**
  * Created by b7hafnb on 07.09.2017.
  */
 
 public class Connection{
     public static final String SERVER_IP = "192.168.43.242";
-    public static final String SERVER_LOCATION = "http://"+SERVER_IP+":9000";
+    public static final String SERVER_LOCATION = "https://notezilla.wtf:8443";
     public static final String DELETE_NOTE = "/notes/delete/";
     public static final String GET_NOTE = "/notes/all/";
     public static final String CREATE_NOTE = "/notes/new/";
@@ -72,8 +71,8 @@ public class Connection{
             URL url = new URL(SERVER_LOCATION + place + "?email="+email+"&password="+password);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("PUT");
-            connection.setConnectTimeout(5000);
-            connection.setReadTimeout(5000);
+        //    connection.setConnectTimeout(5000);
+        //    connection.setReadTimeout(5000);
 //TODO handle exception
             connection.connect();
 
