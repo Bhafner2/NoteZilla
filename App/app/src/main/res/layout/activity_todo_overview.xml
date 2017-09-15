@@ -11,7 +11,14 @@
         android:layout_height="40dp"
         android:id="@+id/create"
         android:contentDescription="@string/create"
-        android:src="@drawable/create"/>
+        android:src="@drawable/create"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        android:paddingBottom="5dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingTop="5dp"
+        />
 
     <ListView
         android:id="@+id/list_view"
@@ -27,6 +34,12 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:src="@drawable/logout"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        android:paddingBottom="5dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingTop="5dp"
         />
 
 </RelativeLayout>

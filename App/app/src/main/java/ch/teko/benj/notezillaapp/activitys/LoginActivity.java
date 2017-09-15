@@ -51,6 +51,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private static final String NOT_VALID = "NOT_VALID";
     private static final String VALID = "VALID";
+    public static boolean NO_CONNECTION = true;
     private Users user;
     private static final int REQUEST_READ_CONTACTS = 0;
 
@@ -303,12 +304,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             String jsonFile = putServerRequest(VERIFY_USER, mEmail, mPassword);
             Log.d("Server answer", jsonFile);
             if(jsonFile.equals("No connection")){
-                toast("No connection to Server");
+                NO_CONNECTION = true;
                 return false;
-            }
-            if(jsonFile.equals("")){
+            } else if(jsonFile.equals("")){
+                NO_CONNECTION = false;
                 return false;
             }else {
+                NO_CONNECTION = false;
                 try {
                     JSONObject object = new JSONObject(jsonFile);
                     user = new Users(object.getInt("idUsers"), object.getString("email"), object.getString("password"), object.getString("name"));
@@ -332,8 +334,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 finish();
 
             } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+                if(NO_CONNECTION){
+                    toast("No connection to Server");
+                }else {
+                    mPasswordView.setError(getString(R.string.error_incorrect_password));
+                    mPasswordView.requestFocus();
+                }
             }
         }
 
@@ -350,6 +356,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         Toast toast = Toast.makeText(context, message, duration);
         toast.show();
+        Log.d("Toast", message);
     }
 }
 

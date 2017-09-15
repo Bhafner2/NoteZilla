@@ -2,18 +2,33 @@ package ch.teko.benj.notezillaapp.server;
 
 import android.util.Log;
 
+import org.apache.http.conn.ConnectTimeoutException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.X509TrustManager;
+
+import static android.content.ContentValues.TAG;
+
 /**
  * Created by b7hafnb on 07.09.2017.
  */
 
 public class Connection{
-    public static final String SERVER_IP = "192.168.43.242";
+    public static final String SERVER_IP = "172.20.6.86"; //for local tests
+ //   public static final String SERVER_LOCATION = "https://"+SERVER_IP+":8443";  //for local tests
     public static final String SERVER_LOCATION = "https://notezilla.wtf:8443";
     public static final String DELETE_NOTE = "/notes/delete/";
     public static final String GET_NOTE = "/notes/all/";
@@ -22,11 +37,12 @@ public class Connection{
     public static final String VERIFY_USER = "/Users/valid/";
 
     public static String getServerRequest(String place) {
-        HttpURLConnection connection = null;
+        HttpsURLConnection connection = null;
         BufferedReader reader = null;
         try {
+            trustEveryone();
             URL url = new URL(SERVER_LOCATION + place);
-            connection = (HttpURLConnection) url.openConnection();
+            connection = (HttpsURLConnection) url.openConnection();
             connection.connect();
 
             if(connection.getResponseCode() == 200){
@@ -65,15 +81,15 @@ public class Connection{
     }
 
     public static String putServerRequest(String place, String email, String password) {
-        HttpURLConnection connection = null;
+        HttpsURLConnection connection = null;
         BufferedReader reader = null;
         try {
+            trustEveryone();
             URL url = new URL(SERVER_LOCATION + place + "?email="+email+"&password="+password);
-            connection = (HttpURLConnection) url.openConnection();
+            connection = (HttpsURLConnection) url.openConnection();
             connection.setRequestMethod("PUT");
-        //    connection.setConnectTimeout(5000);
-        //    connection.setReadTimeout(5000);
-//TODO handle exception
+            connection.setConnectTimeout(5000);
+            connection.setReadTimeout(5000);
             connection.connect();
 
             if(connection.getResponseCode() == 200){
@@ -93,8 +109,13 @@ public class Connection{
             }else {
                 return "No connection";
             }
-
-        } catch (Exception e){
+        } catch (ConnectTimeoutException e) { //needed for loliypop
+            Log.e(TAG, "Timeout", e);
+            return "No connection";
+        } catch (SocketTimeoutException e) {
+            Log.e(TAG, " Socket timeout", e);
+            return "No connection";
+        } catch (IOException e) {
             e.printStackTrace();
             return "No connection";
         } finally {
@@ -112,10 +133,11 @@ public class Connection{
     }
 
     public static void deleteNoteServerRequest(String id) {
-        HttpURLConnection connection = null;
+        HttpsURLConnection connection = null;
         try {
+            trustEveryone();
             URL url = new URL(SERVER_LOCATION + DELETE_NOTE + id);
-            connection = (HttpURLConnection) url.openConnection();
+            connection = (HttpsURLConnection) url.openConnection();
             connection.setRequestMethod("DELETE");
             connection.connect();
 
@@ -131,10 +153,11 @@ public class Connection{
     }
 
     public static void createNoteServerRequest(String titel, String contend) {
-        HttpURLConnection connection = null;
+        HttpsURLConnection connection = null;
         try {
+            trustEveryone();
             URL url = new URL(SERVER_LOCATION + CREATE_NOTE + "?title=" + titel + "&content=" + contend);
-            connection = (HttpURLConnection) url.openConnection();
+            connection = (HttpsURLConnection) url.openConnection();
             connection.setRequestMethod("PUT");
             connection.connect();
 
@@ -150,10 +173,11 @@ public class Connection{
     }
 
     public static void editNoteServerRequest(String id, String titel, String contend) {
-        HttpURLConnection connection = null;
+        HttpsURLConnection connection = null;
         try {
+            trustEveryone();
             URL url = new URL(SERVER_LOCATION + EDIT_NOTE + id + "?id=" + id + "&title=" + titel + "&content=" + contend);
-            connection = (HttpURLConnection) url.openConnection();
+            connection = (HttpsURLConnection) url.openConnection();
             connection.setRequestMethod("PUT");
             connection.connect();
 
@@ -165,6 +189,29 @@ public class Connection{
             if (connection != null) {
                 connection.disconnect();
             }
+        }
+    }
+
+    private static void trustEveryone() {
+        try {
+            HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier(){
+                public boolean
+                verify(String hostname, SSLSession session) {
+                    return true;
+                }});
+            SSLContext context = SSLContext.getInstance("TLS");
+            context.init(null, new X509TrustManager[]{new X509TrustManager(){
+                public void checkClientTrusted(X509Certificate[] chain,
+                                               String authType) throws CertificateException {}
+                public void checkServerTrusted(X509Certificate[] chain,
+                                               String authType) throws CertificateException {}
+                public X509Certificate[] getAcceptedIssuers() {
+                    return new X509Certificate[0];
+                }}}, new SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(
+                    context.getSocketFactory());
+        } catch (Exception e) { // should never happen
+            e.printStackTrace();
         }
     }
 }

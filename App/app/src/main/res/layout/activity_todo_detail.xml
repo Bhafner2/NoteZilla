@@ -13,6 +13,12 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:src="@drawable/save"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        android:paddingBottom="5dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingTop="5dp"
         />
 
     <ImageButton
@@ -23,6 +29,12 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:src="@drawable/delete"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        android:paddingBottom="5dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingTop="5dp"
         />
 
     <ImageButton
@@ -33,6 +45,12 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:src="@drawable/logout"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        android:paddingBottom="5dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingTop="5dp"
         />
 
     <EditText
@@ -56,6 +74,6 @@
         android:gravity="top"
         android:inputType="textMultiLine"
         android:layout_below="@+id/title"
-        />
+        android:layout_above="@+id/logout" />
 
 </RelativeLayout>
